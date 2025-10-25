@@ -20,13 +20,15 @@ enum Backend {
     WaitAddress(waitaddress::WaitAddress),
 }
 
-static BACKEND: AtomicPtr<Backend> = AtomicPtr::new(ptr::null_mut());
+rubicon::process_local! {
+    static PL_THREAD_PARKER_WINDOWS_BACKEND: AtomicPtr<Backend> = AtomicPtr::new(ptr::null_mut());
+}
 
 impl Backend {
     #[inline]
     fn get() -> &'static Backend {
         // Fast path: use the existing object
-        let backend_ptr = BACKEND.load(Ordering::Acquire);
+        let backend_ptr = PL_THREAD_PARKER_WINDOWS_BACKEND.load(Ordering::Acquire);
         if !backend_ptr.is_null() {
             return unsafe { &*backend_ptr };
         };
@@ -51,7 +53,7 @@ impl Backend {
 
         // Try to set our new Backend as the global one
         let backend_ptr = Box::into_raw(Box::new(backend));
-        match BACKEND.compare_exchange(
+        match PL_THREAD_PARKER_WINDOWS_BACKEND.compare_exchange(
             ptr::null_mut(),
             backend_ptr,
             Ordering::Release,

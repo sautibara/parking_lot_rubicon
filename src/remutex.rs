@@ -19,8 +19,8 @@ unsafe impl GetThreadId for RawThreadId {
         // The address of a thread-local variable is guaranteed to be unique to the
         // current thread, and is also guaranteed to be non-zero. The variable has to have a
         // non-zero size to guarantee it has a unique address for each thread.
-        thread_local!(static KEY: u8 = 0);
-        KEY.with(|x| {
+        rubicon::thread_local!(static PL_REMUTEX_THREAD_ID_KEY: u8 = 0);
+        PL_REMUTEX_THREAD_ID_KEY.with(|x| {
             NonZeroUsize::new(x as *const _ as usize)
                 .expect("thread-local variable address is null")
         })
