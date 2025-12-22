@@ -9,7 +9,7 @@
 //! `Once` that are smaller, faster and more flexible than those in the Rust
 //! standard library. It also provides a `ReentrantMutex` type.
 
-#![warn(rust_2018_idioms)]
+#![warn(missing_docs, rust_2018_idioms)]
 
 mod condvar;
 mod elision;
@@ -52,7 +52,7 @@ pub use self::rwlock::{
     const_rwlock, MappedRwLockReadGuard, MappedRwLockWriteGuard, RwLock, RwLockReadGuard,
     RwLockUpgradableReadGuard, RwLockWriteGuard,
 };
-pub use ::lock_api;
+pub use lock_api;
 
 #[cfg(feature = "arc_lock")]
 pub use self::lock_api::{
